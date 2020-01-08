@@ -1,13 +1,16 @@
 import pandas as pd
 from texttable import Texttable as tt
 
+#df will be an excel file exported from fulfillment website portal for Viasat
 df = pd.read_excel('viasatjan.1.8.xlsx')
+#elist is an excel sheet to start each tech's inventory at 0
 elist = pd.read_excel('Equip.xlsx')
 
 size = len(df)
 
-# X order 0=Kevin, 1David, 2Kendall, 3Johnny
+# X order 0=Kevin, 1David, 2Kendall, 3Johnny, 4James, 5Crabtree
 
+#Checkout funtions adds existing equipment to tech's inventory
 def checkout(tech):
     global df
     global elist
@@ -54,6 +57,7 @@ fsm_num = []
 date_completed = []
 job_type = []
 
+#equip used function pulls completed jobs from the spreadsheet and finds the equipment used by tech for each job
 def equip_used(tech):
     global size
     global elist
@@ -68,6 +72,7 @@ def equip_used(tech):
             job_type.append(df.iloc[x,7])
         x = x+1
 
+#subtract function takes the equipment used list appended in equip_used function and subtracts that equipment from tech's inventory
 def subtract(tech):
     global elist
     global equipment_used
@@ -111,13 +116,13 @@ def subtract(tech):
             elist.at[y, 'Dish'] = dish_amount
     print(elist.iloc[y])
 
-checkout("Johnny")
+checkout("James")
 
-equip_used("Johnny")
+equip_used("James")
 
-subtract("Johnny")
+subtract("James")
 
-
+#creating a table to show lists appended in equip_used function to make easier to read
 tab = tt()
 headings = ['Equipment','FSM#','Date Completed','Job Type']
 tab.header(headings)
