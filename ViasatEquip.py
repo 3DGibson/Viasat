@@ -127,6 +127,3 @@ for row in zip(equipment_used,fsm_num,date_completed,job_type):
 
 s = tab.draw()
 print(s)
-
-
-#HEYYYY
