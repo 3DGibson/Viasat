@@ -1,6 +1,7 @@
 import pandas as pd
+from texttable import Texttable as tt
 
-df = pd.read_excel('ViaDec.xlsx')
+df = pd.read_excel('viasatjan.1.8.xlsx')
 elist = pd.read_excel('Equip.xlsx')
 
 size = len(df)
@@ -18,33 +19,40 @@ def checkout(tech):
         x = 2
     elif tech == "Johnny":
         x = 3
+    elif tech == "James":
+        x = 4
+    elif tech == "Crabtree":
+        x = 5
+    Dish_check = input("Dish:")
     VS2_check = input("Viasat 2:")
     Ptria_check = input("Ptria:")
-    Etria_check = input("Etria:")
-    Dish_check = input("Dish:")
-    SB2_check = input("SB2:")
     SB2plus_check = input("SB2+:")
+    SB2_check = input("SB2:")
+    Etria_check = input("Etria:")
 
-    vs2_amount = elist.iloc[x,1] + int(VS2_check)
+    vs2_amount = elist.iloc[x,2] + int(VS2_check)
     elist.at[x,'Viasat 2'] = vs2_amount
 
-    ptria_amount = elist.iloc[x, 2] + int(Ptria_check)
+    ptria_amount = elist.iloc[x, 3] + int(Ptria_check)
     elist.at[x, 'Ptria'] = ptria_amount
 
-    etria_amount = elist.iloc[x, 3] + int(Etria_check)
+    etria_amount = elist.iloc[x, 6] + int(Etria_check)
     elist.at[x, 'Etria'] = etria_amount
 
-    dish_amount = elist.iloc[x, 4] + int(Dish_check)
+    dish_amount = elist.iloc[x, 1] + int(Dish_check)
     elist.at[x, 'Dish'] = dish_amount
 
     sb2_amount = elist.iloc[x, 5] + int(SB2_check)
     elist.at[x, 'SB2'] = sb2_amount
 
-    sb2plus_amount = elist.iloc[x, 6] + int(SB2plus_check)
+    sb2plus_amount = elist.iloc[x, 4] + int(SB2plus_check)
     elist.at[x, 'SB2+'] = sb2plus_amount
 
 
 equipment_used = []
+fsm_num = []
+date_completed = []
+job_type = []
 
 def equip_used(tech):
     global size
@@ -55,6 +63,9 @@ def equip_used(tech):
         tech1 = df.iloc[x,26]
         if tech1 == tech:
             equipment_used.append(df.iloc[x,33])
+            fsm_num.append(df.iloc[x,0])
+            date_completed.append(df.iloc[x,5])
+            job_type.append(df.iloc[x,7])
         x = x+1
 
 def subtract(tech):
@@ -68,37 +79,54 @@ def subtract(tech):
         y = 2
     elif tech == "Johnny":
         y = 3
+    elif tech == "James":
+        y = 4
+    elif tech == "Crabtree":
+        y = 5
     for a in equipment_used:
         if a == 'SB2':
-            sb2_amount = elist.iloc[y, 5] - 1
+            sb2_amount = elist.iloc[y, 2] - 1
             elist.at[y,'SB2'] = sb2_amount
-            dish_amount = elist.iloc[y, 4] - 1
+            dish_amount = elist.iloc[y, 1] - 1
             elist.at[y, 'Dish'] = dish_amount
-            etria_amount = elist.iloc[y, 3] - 1
+            etria_amount = elist.iloc[y, 6] - 1
             elist.at[y, 'Etria'] = etria_amount
         elif a == 'VS2SPKWIFI':
-            vs2_amount = (elist.iloc[y, 1]) - 1
+            vs2_amount = (elist.iloc[y, 2]) - 1
             elist.at[y, 'Viasat 2'] = vs2_amount
-            dish_amount = elist.iloc[y, 4] - 1
+            dish_amount = elist.iloc[y, 1] - 1
             elist.at[y, 'Dish'] = dish_amount
-            ptria_amount = elist.iloc[y, 2] - 1
+            ptria_amount = elist.iloc[y, 3] - 1
             elist.at[y, 'Ptria'] = ptria_amount
         elif a == 'SB2PLUS':
-            sb2plus_amount = elist.iloc[y, 6] - 1
+            sb2plus_amount = elist.iloc[y, 4] - 1
             elist.at[y, 'SB2+'] = sb2plus_amount
-            dish_amount = elist.iloc[y, 4] - 1
+            dish_amount = elist.iloc[y, 1] - 1
             elist.at[y, 'Dish'] = dish_amount
-            etria_amount = elist.iloc[y, 3] - 1
+            etria_amount = elist.iloc[y, 6] - 1
             elist.at[y, 'Etria'] = etria_amount
-
-    print(elist)
+    for a in job_type:
+        if a == 'Upgrade':
+            dish_amount = elist.iloc[y, 1] + 1
+            elist.at[y, 'Dish'] = dish_amount
+    print(elist.iloc[y])
 
 checkout("Johnny")
 
-print(elist)
+equip_used("Johnny")
 
-#equip_used("Johnny")
+subtract("Johnny")
 
-#subtract("Johnny")
 
-print(equipment_used)
+tab = tt()
+headings = ['Equipment','FSM#','Date Completed','Job Type']
+tab.header(headings)
+
+for row in zip(equipment_used,fsm_num,date_completed,job_type):
+    tab.add_row(row)
+
+s = tab.draw()
+print(s)
+
+
+#HEYYYY
